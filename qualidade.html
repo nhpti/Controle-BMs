@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Qualidade - Novo Horizonte Promotora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #005feb;
+      --navy: #07189d;
+      --green: #0f934a;
+      --green-soft: #dff5e9;
+      --yellow: #ee9300;
+      --yellow-soft: #fff2cd;
+      --red: #ed2024;
+      --red-soft: #ffdede;
+      --line: rgba(125, 164, 211, 0.5);
+      --panel: rgba(255, 255, 255, 0.55);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: #f5f9ff;
+      color: var(--navy);
+      font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+      overflow: auto;
+    }
+
+    .sprite {
+      display: none;
+    }
+
+    svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dashboard {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-width: 1180px;
+      min-height: 660px;
+      overflow: hidden;
+      background: #f7fbff url("img/fundo1.png") center center / cover no-repeat;
+    }
+
+    .hero-copy {
+      position: absolute;
+      top: 6.5%;
+      left: 3.8%;
+      z-index: 2;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 0.96;
+      letter-spacing: 0;
+      text-shadow: 0 2px 5px rgba(0, 55, 150, 0.12);
+    }
+
+    .hero-copy p {
+      margin: 18px 0 0;
+      color: #315894;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .brand {
+      position: absolute;
+      top: 3.2%;
+      right: 3.7%;
+      width: 322px;
+      z-index: 2;
+    }
+
+    .brand img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: saturate(1.12) contrast(1.04);
+    }
+
+    .panel {
+      border: 1.5px solid rgba(125, 164, 211, 0.45);
+      border-radius: 17px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(0, 55, 145, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+    }
+
+    .dashboard-nav {
+      position: absolute;
+      right: 3.5%;
+      bottom: 1.35%;
+      z-index: 5;
+      display: flex;
+      gap: 7px;
+      padding: 6px;
+      border-color: rgba(88, 140, 205, 0.45);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.64);
+      box-shadow: 0 12px 28px rgba(0, 55, 145, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .dashboard-nav a {
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      border-radius: 13px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .dashboard-nav a:hover {
+      background: rgba(255, 255, 255, 0.72);
+      transform: translateY(-1px);
+    }
+
+    .dashboard-nav a.active {
+      background: linear-gradient(135deg, #0077ff 0%, #0052df 100%);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(0, 95, 235, 0.26);
+    }
+
+    .dashboard-nav a:focus-visible {
+      outline: 3px solid rgba(0, 95, 235, 0.22);
+      outline-offset: 2px;
+    }
+
+    .dashboard-nav svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2.2;
+    }
+
+    .date-badge {
+      position: absolute;
+      top: 12.9%;
+      right: 3.5%;
+      width: 225px;
+      height: 72px;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .date-badge svg {
+      width: 40px;
+      height: 40px;
+      color: var(--blue);
+      stroke-width: 2.2;
+    }
+
+    .date-badge span {
+      display: block;
+      color: #1760c3;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .date-badge strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--navy);
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .date-badge em {
+      display: block;
+      margin-top: 3px;
+      color: #d71920;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.4px;
+    }
+
+    .date-badge em[hidden] {
+      display: none;
+    }
+
+    .date-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .quality-row {
+      position: absolute;
+      left: 3.2%;
+      width: 93.6%;
+      height: 33.1%;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .quality-row.fgts {
+      top: 23.4%;
+    }
+
+    .quality-row.bolsa {
+      top: 58.2%;
+    }
+
+    .product-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #0066ff 0%, #003ed7 88%);
+      color: #fff;
+      text-align: center;
+      box-shadow: inset -10px 0 20px rgba(0, 46, 160, 0.12);
+    }
+
+    .side-icon {
+      width: 80px;
+      height: 80px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--blue);
+      box-shadow: 0 7px 18px rgba(0, 35, 130, 0.18);
+    }
+
+    .side-icon svg {
+      width: 46px;
+      height: 46px;
+      stroke-width: 2.2;
+    }
+
+    .product-side h2 {
+      margin: 25px 0 0;
+      color: #fff;
+      font-size: 27px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .product-side span {
+      margin-top: 9px;
+      color: rgba(255, 255, 255, 0.94);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .row-total {
+      margin-top: 14px;
+      color: #fff;
+      font-size: 61px;
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: 0;
+      text-shadow: 0 3px 7px rgba(0, 35, 130, 0.16);
+    }
+
+    .quality-content {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) 430px;
+      align-items: center;
+      min-width: 0;
+      padding: 24px 28px 24px 38px;
+    }
+
+    .edit-button {
+      position: absolute;
+      top: 14px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(0, 95, 235, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--blue);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+      z-index: 2;
+    }
+
+    .edit-button svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2.3;
+    }
+
+    body.is-current-date .quality-row:hover .edit-button,
+    body.is-current-date .quality-row:focus-within .edit-button,
+    .quality-row.is-editing .edit-button {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .quality-row.is-editing .edit-button {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    body.is-readonly-date .edit-button {
+      display: none;
+    }
+
+    .metric {
+      position: relative;
+      height: 78%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .metric + .metric,
+    .chart-area {
+      border-left: 1.5px solid var(--line);
+    }
+
+    .metric-heading {
+      display: grid;
+      grid-template-columns: 68px minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+      width: 205px;
+      max-width: 100%;
+    }
+
+    .metric-icon {
+      width: 65px;
+      height: 65px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+    }
+
+    .metric-icon svg {
+      width: 33px;
+      height: 33px;
+      stroke-width: 2.2;
+    }
+
+    .metric.high .metric-icon {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .metric.medium .metric-icon {
+      background: var(--yellow-soft);
+      color: var(--yellow);
+    }
+
+    .metric.low .metric-icon {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .metric-label {
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .metric-label strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .metric.high .metric-label strong {
+      color: var(--green);
+    }
+
+    .metric.medium .metric-label strong {
+      color: var(--yellow);
+    }
+
+    .metric.low .metric-label strong {
+      color: var(--red);
+    }
+
+    .metric-input {
+      width: 110px;
+      height: 72px;
+      margin-top: 22px;
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      outline: none;
+      background: transparent;
+      color: currentColor;
+      font-family: inherit;
+      font-size: 67px;
+      font-weight: 800;
+      line-height: 1;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 40, 150, 0.09);
+      appearance: textfield;
+      -moz-appearance: textfield;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .metric-input::-webkit-outer-spin-button,
+    .metric-input::-webkit-inner-spin-button {
+      margin: 0;
+      appearance: none;
+    }
+
+    .metric.high .metric-input {
+      color: var(--green);
+    }
+
+    .metric.medium .metric-input {
+      color: var(--yellow);
+    }
+
+    .metric.low .metric-input {
+      color: var(--red);
+    }
+
+    .quality-row.is-editing .metric-input {
+      border-color: rgba(0, 95, 235, 0.2);
+      background: rgba(255, 255, 255, 0.52);
+    }
+
+    .quality-row.is-editing .metric-input:focus {
+      border-color: rgba(0, 95, 235, 0.58);
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 0 0 3px rgba(0, 95, 235, 0.09);
+    }
+
+    .metric-input[readonly] {
+      pointer-events: none;
+    }
+
+    .metric-input::placeholder {
+      color: rgba(7, 24, 157, 0.54);
+      opacity: 1;
+    }
+
+    .metric-percent {
+      min-width: 114px;
+      margin-top: 10px;
+      padding: 8px 15px;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .metric.high .metric-percent {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .metric.medium .metric-percent {
+      background: var(--yellow-soft);
+      color: var(--yellow);
+    }
+
+    .metric.low .metric-percent {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .chart-area {
+      height: 86%;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      align-items: center;
+      gap: 28px;
+      padding-left: 37px;
+      min-width: 0;
+    }
+
+    .chart-title {
+      grid-column: 1 / -1;
+      align-self: end;
+      margin: 0 0 -4px 112px;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .donut {
+      width: 180px;
+      height: 180px;
+      position: relative;
+      border-radius: 999px;
+      background: conic-gradient(var(--green) 0deg 0deg, var(--yellow) 0deg 0deg, var(--red) 0deg 360deg);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 6px 16px rgba(0, 60, 140, 0.08);
+    }
+
+    .donut::after {
+      position: absolute;
+      inset: 48px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      content: "";
+      box-shadow: inset 0 0 0 1px rgba(125, 164, 211, 0.12);
+    }
+
+    .legend {
+      display: grid;
+      gap: 26px;
+      min-width: 0;
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) 72px;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0, 70, 160, 0.1);
+    }
+
+    .legend-dot.high {
+      background: #59ba72;
+    }
+
+    .legend-dot.medium {
+      background: #ffb43b;
+    }
+
+    .legend-dot.low {
+      background: #f2262c;
+    }
+
+    .legend-value {
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 800;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .info-note {
+      position: absolute;
+      left: 3.2%;
+      bottom: 1.35%;
+      width: 64%;
+      height: 58px;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      align-items: center;
+      gap: 16px;
+      padding: 8px 17px;
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .info-icon {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    body.is-no-data .quality-row {
+      opacity: 0.78;
+    }
+
+    @media (max-width: 1180px), (max-height: 700px) {
+      .dashboard {
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        padding: 30px 22px;
+        overflow: visible;
+        background-attachment: fixed;
+      }
+
+      .hero-copy,
+      .brand,
+      .dashboard-nav,
+      .date-badge,
+      .quality-row,
+      .info-note {
+        position: static;
+        width: 100%;
+        height: auto;
+      }
+
+      .hero-copy h1 {
+        font-size: 42px;
+      }
+
+      .hero-copy p {
+        font-size: 19px;
+      }
+
+      .brand {
+        width: min(360px, 100%);
+      }
+
+      .date-badge {
+        max-width: 235px;
+      }
+
+      .dashboard-nav {
+        align-self: flex-start;
+      }
+
+      .quality-row {
+        grid-template-columns: 1fr;
+      }
+
+      .product-side {
+        min-height: 240px;
+      }
+
+      .quality-content {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px 0;
+      }
+
+      .chart-area {
+        grid-column: 1 / -1;
+        border-left: 0;
+        border-top: 1.5px solid var(--line);
+        padding: 26px 0 0;
+        justify-content: center;
+      }
+
+      .chart-title {
+        margin-left: 0;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .dashboard {
+        overflow-x: hidden;
+        padding: 24px 16px;
+      }
+
+      .hero-copy {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .hero-copy h1 {
+        max-width: 100%;
+        font-size: 30px;
+        line-height: 1.08;
+        overflow-wrap: break-word;
+      }
+
+      .hero-copy p {
+        width: 100%;
+        max-width: 320px;
+        font-size: 15px;
+        overflow-wrap: break-word;
+      }
+
+      .brand {
+        width: min(320px, 100%);
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .dashboard-nav {
+        width: min(320px, 100%);
+        max-width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 5px;
+        overflow: hidden;
+      }
+
+      .dashboard-nav a {
+        justify-content: center;
+        width: 100%;
+        min-width: 0;
+        padding: 0 6px;
+        font-size: 11px;
+      }
+
+      .dashboard-nav a span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .quality-content {
+        grid-template-columns: 1fr;
+        padding: 24px 18px;
+      }
+
+      .metric + .metric {
+        border-left: 0;
+        border-top: 1.5px solid var(--line);
+        padding-top: 20px;
+      }
+
+      .chart-area {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .legend {
+        width: min(300px, 100%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="icon-briefcase" viewBox="0 0 24 24">
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+      <path d="M3 12h18" />
+      <path d="M10 12v2h4v-2" />
+    </symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24">
+      <path d="M16 20v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="10" cy="7" r="3" />
+      <path d="M20 20v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 4.13a3 3 0 0 1 0 5.74" />
+    </symbol>
+    <symbol id="icon-trend-up" viewBox="0 0 24 24">
+      <path d="m3 17 6-6 4 4 8-8" />
+      <path d="M15 7h6v6" />
+    </symbol>
+    <symbol id="icon-equal" viewBox="0 0 24 24">
+      <path d="M6 9h12" />
+      <path d="M6 15h12" />
+    </symbol>
+    <symbol id="icon-trend-down" viewBox="0 0 24 24">
+      <path d="m3 7 6 6 4-4 8 8" />
+      <path d="M15 17h6v-6" />
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3" y="4.5" width="18" height="16.5" rx="2" />
+      <path d="M8 2v5" />
+      <path d="M16 2v5" />
+      <path d="M3 9.5h18" />
+      <path d="M7 13h3" />
+      <path d="M7 17h3" />
+      <path d="M14 13h3" />
+    </symbol>
+    <symbol id="icon-pencil" viewBox="0 0 24 24">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </symbol>
+    <symbol id="icon-dashboard" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="7" height="8" rx="1.5" />
+      <rect x="14" y="3" width="7" height="5" rx="1.5" />
+      <rect x="14" y="12" width="7" height="9" rx="1.5" />
+      <rect x="3" y="15" width="7" height="6" rx="1.5" />
+    </symbol>
+    <symbol id="icon-pie" viewBox="0 0 24 24">
+      <path d="M12 2v10h10" />
+      <path d="M20.5 15.5A9 9 0 1 1 8.5 3.5" />
+      <path d="M14 2.2A9 9 0 0 1 21.8 10H14Z" />
+    </symbol>
+  </svg>
+
+  <main class="dashboard" aria-label="Controle de Qualidade">
+    <header class="hero-copy">
+      <h1>Controle de Qualidade</h1>
+      <p>Resumo da qualidade dos números por produto</p>
+    </header>
+
+    <div class="brand" aria-label="Novo Horizonte Promotora">
+      <img src="img/logo_nhp_transparente.png" alt="Novo Horizonte Promotora" />
+    </div>
+
+    <nav class="dashboard-nav panel" aria-label="Navegação entre dashboards">
+      <a href="index.html">
+        <svg aria-hidden="true"><use href="#icon-dashboard"></use></svg>
+        <span>Números</span>
+      </a>
+      <a class="active" href="qualidade.html" aria-current="page">
+        <svg aria-hidden="true"><use href="#icon-pie"></use></svg>
+        <span>Qualidade</span>
+      </a>
+    </nav>
+
+    <div class="date-badge panel" aria-label="Data de atualização">
+      <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
+      <span>Data de atualização:<strong id="display-date">11/05/2026</strong><em id="date-status" hidden>SEM DADOS</em></span>
+      <input class="date-input" id="control-date" type="date" aria-label="Escolher data do controle de qualidade" />
+    </div>
+
+    <section class="quality-row fgts panel" data-product="fgts" aria-label="Qualidade FGTS/CLT">
+      <aside class="product-side">
+        <div class="side-icon"><svg aria-hidden="true"><use href="#icon-briefcase"></use></svg></div>
+        <h2>FGTS/CLT</h2>
+        <span>Total de Qualidades</span>
+        <strong class="row-total">56</strong>
+      </aside>
+
+      <div class="quality-content">
+        <button class="edit-button" type="button" aria-label="Editar qualidade FGTS/CLT">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+
+        <div class="metric high" data-field="high">
+          <div class="metric-heading">
+            <span class="metric-icon"><svg aria-hidden="true"><use href="#icon-trend-up"></use></svg></span>
+            <span class="metric-label">Qualidade<strong>Alta</strong></span>
+          </div>
+          <input class="metric-input" type="number" min="0" step="1" inputmode="numeric" value="52" aria-label="Qualidade alta FGTS/CLT" />
+          <span class="metric-percent">92,86%</span>
+        </div>
+
+        <div class="metric medium" data-field="medium">
+          <div class="metric-heading">
+            <span class="metric-icon"><svg aria-hidden="true"><use href="#icon-equal"></use></svg></span>
+            <span class="metric-label">Qualidade<strong>Média</strong></span>
+          </div>
+          <input class="metric-input" type="number" min="0" step="1" inputmode="numeric" value="3" aria-label="Qualidade média FGTS/CLT" />
+          <span class="metric-percent">5,36%</span>
+        </div>
+
+        <div class="metric low" data-field="low">
+          <div class="metric-heading">
+            <span class="metric-icon"><svg aria-hidden="true"><use href="#icon-trend-down"></use></svg></span>
+            <span class="metric-label">Qualidade<strong>Baixa</strong></span>
+          </div>
+          <input class="metric-input" type="number" min="0" step="1" inputmode="numeric" value="1" aria-label="Qualidade baixa FGTS/CLT" />
+          <span class="metric-percent">1,79%</span>
+        </div>
+
+        <div class="chart-area">
+          <h3 class="chart-title">Distribuição Percentual</h3>
+          <div class="donut" aria-hidden="true"></div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot high"></span><span>Qualidade Alta</span><strong class="legend-value" data-legend="high">92,86%</strong></div>
+            <div class="legend-item"><span class="legend-dot medium"></span><span>Qualidade Média</span><strong class="legend-value" data-legend="medium">5,36%</strong></div>
+            <div class="legend-item"><span class="legend-dot low"></span><span>Qualidade Baixa</span><strong class="legend-value" data-legend="low">1,79%</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quality-row bolsa panel" data-product="bolsa" aria-label="Qualidade Bolsa Família">
+      <aside class="product-side">
+        <div class="side-icon"><svg aria-hidden="true"><use href="#icon-users"></use></svg></div>
+        <h2>Bolsa Família</h2>
+        <span>Total de Qualidades</span>
+        <strong class="row-total">48</strong>
+      </aside>
+
+      <div class="quality-content">
+        <button class="edit-button" type="button" aria-label="Editar qualidade Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+
+        <div class="metric high" data-field="high">
+          <div class="metric-heading">
+            <span class="metric-icon"><svg aria-hidden="true"><use href="#icon-trend-up"></use></svg></span>
+            <span class="metric-label">Qualidade<strong>Alta</strong></span>
+          </div>
+          <input class="metric-input" type="number" min="0" step="1" inputmode="numeric" value="40" aria-label="Qualidade alta Bolsa Família" />
+          <span class="metric-percent">83,33%</span>
+        </div>
+
+        <div class="metric medium" data-field="medium">
+          <div class="metric-heading">
+            <span class="metric-icon"><svg aria-hidden="true"><use href="#icon-equal"></use></svg></span>
+            <span class="metric-label">Qualidade<strong>Média</strong></span>
+          </div>
+          <input class="metric-input" type="number" min="0" step="1" inputmode="numeric" value="4" aria-label="Qualidade média Bolsa Família" />
+          <span class="metric-percent">8,33%</span>
+        </div>
+
+        <div class="metric low" data-field="low">
+          <div class="metric-heading">
+            <span class="metric-icon"><svg aria-hidden="true"><use href="#icon-trend-down"></use></svg></span>
+            <span class="metric-label">Qualidade<strong>Baixa</strong></span>
+          </div>
+          <input class="metric-input" type="number" min="0" step="1" inputmode="numeric" value="4" aria-label="Qualidade baixa Bolsa Família" />
+          <span class="metric-percent">8,33%</span>
+        </div>
+
+        <div class="chart-area">
+          <h3 class="chart-title">Distribuição Percentual</h3>
+          <div class="donut" aria-hidden="true"></div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot high"></span><span>Qualidade Alta</span><strong class="legend-value" data-legend="high">83,33%</strong></div>
+            <div class="legend-item"><span class="legend-dot medium"></span><span>Qualidade Média</span><strong class="legend-value" data-legend="medium">8,33%</strong></div>
+            <div class="legend-item"><span class="legend-dot low"></span><span>Qualidade Baixa</span><strong class="legend-value" data-legend="low">8,33%</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="info-note panel">
+      <span class="info-icon">i</span>
+      <span>Os percentuais representam a proporção de cada qualidade em relação ao total do respectivo produto.</span>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    (async () => {
+      const app = window.NHPDashboard;
+      const session = await app.requireAuth();
+
+      if (!session) {
+        return;
+      }
+
+      const DASHBOARD_TYPE = "qualidade";
+      const STORAGE_KEY = "controle-qualidade-historico-v1";
+      const rows = [...document.querySelectorAll("[data-product]")];
+      const dateInput = document.getElementById("control-date");
+      const displayDate = document.getElementById("display-date");
+      const dateStatus = document.getElementById("date-status");
+      const dateBadge = document.querySelector(".date-badge");
+
+      const fields = ["high", "medium", "low"];
+
+      const toNumber = (value) => {
+        const number = Number.parseInt(value, 10);
+        return Number.isFinite(number) && number >= 0 ? number : 0;
+      };
+
+      const clone = (value) => JSON.parse(JSON.stringify(value));
+
+      const todayISO = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
+
+      const formatDateBR = (isoDate) => {
+        const [year, month, day] = isoDate.split("-");
+        return `${day}/${month}/${year}`;
+      };
+
+      const formatPercent = (value, total) => {
+        if (!total) {
+          return "0,00%";
+        }
+
+        return `${((value / total) * 100).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}%`;
+      };
+
+      const readProductsFromDom = () => {
+        const products = {};
+
+        rows.forEach((row) => {
+          const productId = row.dataset.product;
+          products[productId] = {};
+
+          row.querySelectorAll(".metric").forEach((metric) => {
+            products[productId][metric.dataset.field] = toNumber(metric.querySelector(".metric-input").value);
+          });
+        });
+
+        return products;
+      };
+
+      const defaultState = {
+        products: readProductsFromDom()
+      };
+
+      const normalizeState = (state) => {
+        const normalized = {
+          products: clone(defaultState.products)
+        };
+
+        Object.keys(normalized.products).forEach((productId) => {
+          fields.forEach((field) => {
+            normalized.products[productId][field] = toNumber(state?.products?.[productId]?.[field] ?? normalized.products[productId][field]);
+          });
+        });
+
+        return normalized;
+      };
+
+      let syncWarning = "";
+
+      const setSyncWarning = (message) => {
+        syncWarning = message;
+
+        if (message) {
+          dateStatus.textContent = message;
+          dateStatus.hidden = false;
+          return;
+        }
+
+        dateStatus.textContent = "SEM DADOS";
+      };
+
+      const loadLocalHistory = () => app.readLocalHistory(STORAGE_KEY);
+
+      const cacheHistory = () => {
+        app.writeLocalHistory(STORAGE_KEY, history);
+      };
+
+      const loadHistory = async () => {
+        try {
+          return await app.loadDashboardHistory(DASHBOARD_TYPE, STORAGE_KEY, normalizeState);
+        } catch (error) {
+          console.error(error);
+          setSyncWarning("MODO LOCAL");
+          return loadLocalHistory();
+        }
+      };
+
+      const saveRecord = async (isoDate, state) => {
+        history[isoDate] = normalizeState(state);
+        cacheHistory();
+
+        try {
+          await app.saveDashboardRecord(DASHBOARD_TYPE, isoDate, history[isoDate]);
+          setSyncWarning("");
+        } catch (error) {
+          console.error(error);
+          setSyncWarning("SALVO LOCAL");
+        }
+      };
+
+      const findExactStateForDate = (isoDate) => {
+        return history[isoDate] ? normalizeState(history[isoDate]) : null;
+      };
+
+      const buildTodayState = () => {
+        const previousDates = Object.keys(history)
+          .filter((date) => date < today)
+          .sort();
+
+        if (previousDates.length) {
+          return normalizeState(history[previousDates[previousDates.length - 1]]);
+        }
+
+        return normalizeState(defaultState);
+      };
+
+      const rowTotal = (product) => fields.reduce((total, field) => total + toNumber(product[field]), 0);
+
+      const updateRow = (row, product) => {
+        const total = rowTotal(product);
+        const high = toNumber(product.high);
+        const medium = toNumber(product.medium);
+        const low = toNumber(product.low);
+        const highDeg = total ? (high / total) * 360 : 0;
+        const mediumDeg = total ? highDeg + (medium / total) * 360 : 0;
+
+        row.querySelector(".row-total").textContent = total;
+
+        fields.forEach((field) => {
+          const metric = row.querySelector(`.metric[data-field="${field}"]`);
+          const input = metric.querySelector(".metric-input");
+          const percent = formatPercent(toNumber(product[field]), total);
+
+          input.placeholder = "";
+          input.value = product[field];
+          metric.querySelector(".metric-percent").textContent = percent;
+          row.querySelector(`[data-legend="${field}"]`).textContent = percent;
+        });
+
+        row.querySelector(".donut").style.background = total
+          ? `conic-gradient(#59ba72 0deg ${highDeg}deg, #ffb43b ${highDeg}deg ${mediumDeg}deg, #f2262c ${mediumDeg}deg 360deg)`
+          : "conic-gradient(rgba(125, 164, 211, 0.35) 0deg 360deg)";
+      };
+
+      const lockAllRows = () => {
+        editingRow = null;
+
+        rows.forEach((row) => {
+          row.classList.remove("is-editing");
+
+          row.querySelectorAll(".metric-input").forEach((input) => {
+            input.readOnly = true;
+            input.tabIndex = -1;
+          });
+        });
+      };
+
+      const setViewMode = ({ canEdit, hasData }) => {
+        document.body.classList.toggle("is-current-date", canEdit);
+        document.body.classList.toggle("is-readonly-date", !canEdit);
+        document.body.classList.toggle("is-no-data", !hasData);
+        lockAllRows();
+      };
+
+      const renderState = (state, isoDate) => {
+        displayDate.textContent = formatDateBR(isoDate);
+        dateStatus.textContent = syncWarning || "SEM DADOS";
+        dateStatus.hidden = !syncWarning;
+
+        rows.forEach((row) => {
+          updateRow(row, state.products[row.dataset.product]);
+        });
+      };
+
+      const renderNoData = (isoDate) => {
+        displayDate.textContent = formatDateBR(isoDate);
+        dateStatus.textContent = "SEM DADOS";
+        dateStatus.hidden = false;
+
+        rows.forEach((row) => {
+          row.querySelector(".row-total").textContent = "--";
+          row.querySelector(".donut").style.background = "conic-gradient(rgba(125, 164, 211, 0.35) 0deg 360deg)";
+
+          fields.forEach((field) => {
+            const metric = row.querySelector(`.metric[data-field="${field}"]`);
+            metric.querySelector(".metric-input").placeholder = "--";
+            metric.querySelector(".metric-input").value = "";
+            metric.querySelector(".metric-percent").textContent = "--";
+            row.querySelector(`[data-legend="${field}"]`).textContent = "--";
+          });
+        });
+      };
+
+      const ensureTodayExists = async () => {
+        if (!history[today]) {
+          history[today] = buildTodayState();
+          await saveRecord(today, history[today]);
+        }
+      };
+
+      const selectDate = (isoDate) => {
+        selectedDate = isoDate > today ? today : isoDate;
+        const state = findExactStateForDate(selectedDate);
+        const isCurrentDate = selectedDate === today;
+
+        dateInput.value = selectedDate;
+
+        if (state) {
+          renderState(state, selectedDate);
+          setViewMode({ canEdit: isCurrentDate, hasData: true });
+          return;
+        }
+
+        renderNoData(selectedDate);
+        setViewMode({ canEdit: false, hasData: false });
+      };
+
+      const saveCurrentEdit = async (input) => {
+        if (input.value === "" || selectedDate !== today) {
+          return;
+        }
+
+        const row = input.closest("[data-product]");
+        const productId = row.dataset.product;
+        const field = input.closest(".metric").dataset.field;
+        const state = normalizeState(history[today]);
+
+        state.products[productId][field] = toNumber(input.value);
+        updateRow(row, state.products[productId]);
+        await saveRecord(today, state);
+      };
+
+      const openRowEditor = (row) => {
+        if (selectedDate !== today || !history[today]) {
+          return;
+        }
+
+        lockAllRows();
+        editingRow = row;
+        row.classList.add("is-editing");
+
+        const inputs = [...row.querySelectorAll(".metric-input")];
+        inputs.forEach((input) => {
+          input.readOnly = false;
+          input.tabIndex = 0;
+        });
+
+        inputs[0]?.focus();
+        inputs[0]?.select();
+      };
+
+      let history = await loadHistory();
+      const today = todayISO();
+      let selectedDate = today;
+      let editingRow = null;
+
+      dateInput.max = today;
+      cacheHistory();
+      await ensureTodayExists();
+      selectDate(today);
+
+      dateInput.addEventListener("change", () => {
+        if (dateInput.value) {
+          selectDate(dateInput.value);
+        }
+      });
+
+      dateBadge.addEventListener("click", () => {
+        if (typeof dateInput.showPicker === "function") {
+          try {
+            dateInput.showPicker();
+            return;
+          } catch {
+            dateInput.focus();
+          }
+        }
+
+        dateInput.focus();
+      });
+
+      rows.forEach((row) => {
+        row.querySelector(".edit-button").addEventListener("click", (event) => {
+          event.stopPropagation();
+          openRowEditor(row);
+        });
+
+        row.querySelectorAll(".metric-input").forEach((input) => {
+          input.addEventListener("keydown", (event) => {
+            if (["e", "E", "+", "-", ","].includes(event.key)) {
+              event.preventDefault();
+            }
+          });
+
+          input.addEventListener("focus", () => input.select());
+          input.addEventListener("input", () => saveCurrentEdit(input));
+          input.addEventListener("blur", () => {
+            if (input.value === "") {
+              input.value = "0";
+              saveCurrentEdit(input);
+            }
+          });
+        });
+      });
+
+      document.addEventListener("click", (event) => {
+        if (editingRow && !editingRow.contains(event.target)) {
+          lockAllRows();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && editingRow) {
+          lockAllRows();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

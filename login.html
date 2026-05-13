@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Controle BM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #005feb;
+      --navy: #07189d;
+      --red: #d71920;
+      --line: rgba(125, 164, 211, 0.58);
+      --panel: rgba(255, 255, 255, 0.66);
+      --shadow: 0 24px 54px rgba(0, 56, 145, 0.16);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background: #f7fbff url("img/fundo1.png") center center / cover no-repeat fixed;
+      color: var(--navy);
+      font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(112deg, rgba(255, 255, 255, 0.44) 0%, rgba(255, 255, 255, 0.1) 42%, rgba(0, 95, 235, 0.07) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 52%);
+    }
+
+    .login-shell {
+      position: relative;
+      z-index: 1;
+      width: min(430px, 100%);
+      display: grid;
+      gap: 22px;
+    }
+
+    .brand {
+      width: min(330px, 100%);
+      margin: 0 auto;
+    }
+
+    .brand img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: saturate(1.12) contrast(1.04);
+    }
+
+    .login-panel {
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.78), var(--panel));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 30px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 31px;
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .subtitle {
+      margin: 10px 0 28px;
+      color: #1760c3;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: #0641aa;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    input {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid rgba(0, 95, 235, 0.2);
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.76);
+      color: var(--navy);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0;
+      padding: 0 14px;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus {
+      border-color: rgba(0, 95, 235, 0.58);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 0 0 3px rgba(0, 95, 235, 0.1);
+    }
+
+    button {
+      width: 100%;
+      height: 50px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0077ff 0%, #0052df 100%);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 12px 22px rgba(0, 95, 235, 0.24);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px rgba(0, 95, 235, 0.28);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.72;
+      transform: none;
+    }
+
+    .message {
+      min-height: 18px;
+      margin: 2px 0 0;
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 20px 16px;
+      }
+
+      .login-panel {
+        padding: 24px 18px;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-shell" aria-label="Login do Controle BM">
+    <div class="brand" aria-label="Novo Horizonte Promotora">
+      <img src="img/logo_nhp_transparente.png" alt="Novo Horizonte Promotora" />
+    </div>
+
+    <section class="login-panel">
+      <h1>Controle BM</h1>
+      <p class="subtitle">Acesso restrito aos dashboards da equipe.</p>
+
+      <form id="login-form">
+        <label>
+          E-mail
+          <input id="email" type="email" autocomplete="email" required />
+        </label>
+
+        <label>
+          Senha
+          <input id="password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <button id="submit-button" type="submit">Entrar</button>
+        <p class="message" id="login-message" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    (async () => {
+      const app = window.NHPDashboard;
+      const form = document.getElementById("login-form");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const submitButton = document.getElementById("submit-button");
+      const message = document.getElementById("login-message");
+
+      await app.redirectIfAuthenticated();
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        message.textContent = "";
+        submitButton.disabled = true;
+        submitButton.textContent = "Entrando...";
+
+        const { error } = await app.client.auth.signInWithPassword({
+          email: emailInput.value.trim(),
+          password: passwordInput.value
+        });
+
+        if (error) {
+          message.textContent = "E-mail ou senha inválidos.";
+          submitButton.disabled = false;
+          submitButton.textContent = "Entrar";
+          return;
+        }
+
+        window.location.href = app.redirectTarget();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Numeros - Novo Horizonte Promotora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #005feb;
+      --navy: #07189d;
+      --line: rgba(125, 164, 211, 0.72);
+      --line-soft: rgba(142, 177, 219, 0.62);
+      --red: #f20d15;
+      --panel: rgba(255, 255, 255, 0.38);
+      --panel-strong: rgba(255, 255, 255, 0.56);
+      --shadow-soft: 0 16px 38px rgba(0, 56, 145, 0.09);
+      --shadow-lift: 0 22px 48px rgba(0, 65, 170, 0.15);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: #f5f9ff;
+      color: var(--navy);
+      font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+      overflow: auto;
+    }
+
+    .sprite {
+      display: none;
+    }
+
+    .dashboard {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-width: 1180px;
+      min-height: 660px;
+      overflow: hidden;
+      background: #f7fbff url("img/fundo1.png") center center / cover no-repeat;
+    }
+
+    .dashboard::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(112deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.08) 38%, rgba(0, 95, 235, 0.045) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 42%);
+    }
+
+    .hero-copy {
+      position: absolute;
+      top: 4.1%;
+      left: 3.4%;
+      z-index: 2;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 58px;
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: 0;
+      text-shadow: 0 2px 5px rgba(0, 55, 150, 0.12);
+    }
+
+    .hero-copy p {
+      margin: 15px 0 0;
+      color: #0645af;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .brand {
+      position: absolute;
+      top: 2.6%;
+      right: 2.9%;
+      z-index: 2;
+      width: 362px;
+    }
+
+    .brand img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: saturate(1.12) contrast(1.04);
+    }
+
+    .panel {
+      border: 1.5px solid rgba(107, 154, 211, 0.58);
+      border-radius: 15px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.62), var(--panel));
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.58);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .dashboard-nav {
+      position: absolute;
+      left: 3.4%;
+      bottom: 2.15%;
+      z-index: 5;
+      display: flex;
+      gap: 7px;
+      padding: 6px;
+      border-color: rgba(88, 140, 205, 0.45);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.64);
+      box-shadow: 0 12px 28px rgba(0, 55, 145, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .dashboard-nav a {
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      border-radius: 13px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .dashboard-nav a:hover {
+      background: rgba(255, 255, 255, 0.72);
+      transform: translateY(-1px);
+    }
+
+    .dashboard-nav a.active {
+      background: linear-gradient(135deg, #0077ff 0%, #0052df 100%);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(0, 95, 235, 0.26);
+    }
+
+    .dashboard-nav a:focus-visible {
+      outline: 3px solid rgba(0, 95, 235, 0.22);
+      outline-offset: 2px;
+    }
+
+    .dashboard-nav svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2.2;
+    }
+
+    .summary-total {
+      position: absolute;
+      top: 18.35%;
+      left: 3.4%;
+      width: 58.7%;
+      height: 16.75%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+
+    .summary-total::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background: linear-gradient(110deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 38%);
+    }
+
+    .summary-item {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    .summary-item + .summary-item::before {
+      position: absolute;
+      top: 16%;
+      bottom: 16%;
+      left: 0;
+      width: 1.5px;
+      content: "";
+      background: var(--line-soft);
+    }
+
+    .summary-number {
+      color: var(--blue);
+      background: linear-gradient(180deg, #0072ff 0%, #004ee5 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      font-size: 88px;
+      font-weight: 800;
+      line-height: 0.88;
+      letter-spacing: 0;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 3px 6px rgba(0, 85, 220, 0.12);
+    }
+
+    .summary-label {
+      margin-top: 11px;
+      color: #0641aa;
+      font-size: 23px;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .summary-banned {
+      position: absolute;
+      top: 18.35%;
+      right: 8.8%;
+      width: 15.65%;
+      height: 16.75%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-color: rgba(233, 64, 64, 0.54);
+      background: linear-gradient(145deg, rgba(255, 250, 250, 0.72), rgba(255, 235, 235, 0.34));
+      box-shadow: 0 14px 30px rgba(210, 40, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .summary-banned .edit-button {
+      top: 8px;
+      right: 9px;
+    }
+
+    body.is-current-date .summary-banned:hover .edit-button,
+    body.is-current-date .summary-banned:focus-within .edit-button,
+    .summary-banned.is-editing .edit-button {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .summary-banned.is-editing .edit-button {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .banned-heading {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin: 0 0 13px;
+      color: #d71920;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .banned-heading svg {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      stroke-width: 2.6;
+    }
+
+    .banned-number {
+      width: 94px;
+      height: 70px;
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      outline: none;
+      background: transparent;
+      color: var(--red);
+      font-family: inherit;
+      font-size: 67px;
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(242, 13, 21, 0.1);
+      appearance: textfield;
+      -moz-appearance: textfield;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .banned-number::-webkit-outer-spin-button,
+    .banned-number::-webkit-inner-spin-button {
+      margin: 0;
+      appearance: none;
+    }
+
+    .summary-banned.is-editing .banned-number {
+      border-color: rgba(242, 13, 21, 0.28);
+      background: rgba(255, 255, 255, 0.56);
+    }
+
+    .summary-banned.is-editing .banned-number:focus {
+      border-color: rgba(242, 13, 21, 0.64);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 0 0 3px rgba(242, 13, 21, 0.09);
+    }
+
+    .banned-number[readonly] {
+      pointer-events: none;
+    }
+
+    .banned-number::placeholder {
+      color: rgba(242, 13, 21, 0.62);
+      opacity: 1;
+    }
+
+    .section-title {
+      position: absolute;
+      left: 3.4%;
+      width: 93%;
+      display: flex;
+      align-items: center;
+      color: var(--blue);
+      font-size: 29px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      text-align: center;
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0, 85, 220, 0.12);
+    }
+
+    .section-title::before,
+    .section-title::after {
+      height: 1.5px;
+      content: "";
+      flex: 1;
+      background: linear-gradient(90deg, rgba(125, 164, 211, 0), var(--line), rgba(125, 164, 211, 0));
+    }
+
+    .section-title span {
+      padding: 0 24px;
+      white-space: nowrap;
+    }
+
+    .fgts-title {
+      top: 38.25%;
+    }
+
+    .bolsa-title {
+      top: 64.75%;
+    }
+
+    .product-grid {
+      position: absolute;
+      left: 3.4%;
+      width: 93%;
+      display: grid;
+      align-items: stretch;
+    }
+
+    .fgts-grid {
+      top: 42.35%;
+      height: 19.6%;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 34px;
+    }
+
+    .bolsa-grid {
+      top: 68.85%;
+      height: 19.35%;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 19px;
+    }
+
+    .product-card {
+      position: relative;
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      padding: 14px 25px 16px;
+      overflow: hidden;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      will-change: transform;
+    }
+
+    .product-card::before {
+      position: absolute;
+      top: 0;
+      left: -35%;
+      width: 28%;
+      height: 100%;
+      content: "";
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+      opacity: 0;
+      transform: skewX(-16deg);
+      transition: left 0.45s ease, opacity 0.22s ease;
+    }
+
+    .product-card:hover {
+      border-color: rgba(0, 95, 235, 0.42);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.36));
+      box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      transform: translateY(-4px);
+    }
+
+    .product-card:hover::before {
+      left: 108%;
+      opacity: 1;
+    }
+
+    .edit-button {
+      position: absolute;
+      top: 9px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(0, 95, 235, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--blue);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+    }
+
+    .edit-button svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2.3;
+    }
+
+    body.is-current-date .product-card:hover .edit-button,
+    body.is-current-date .product-card:focus-within .edit-button {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .edit-button:hover {
+      background: #fff;
+    }
+
+    body.is-readonly-date .edit-button {
+      display: none;
+    }
+
+    .bolsa-grid .product-card {
+      grid-template-rows: 54px 1fr;
+      padding: 13px 14px 15px;
+    }
+
+    .card-heading {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .bolsa-grid .card-heading {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      column-gap: 10px;
+      justify-content: normal;
+    }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      position: absolute;
+      left: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: linear-gradient(145deg, #0077ff 0%, #004edf 100%);
+      box-shadow: 0 8px 17px rgba(0, 95, 235, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .product-card:hover .card-icon {
+      box-shadow: 0 12px 22px rgba(0, 95, 235, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px) scale(1.03);
+    }
+
+    .bolsa-grid .card-icon {
+      width: 48px;
+      height: 48px;
+      position: static;
+    }
+
+    .card-icon svg {
+      width: 30px;
+      height: 30px;
+      color: #fff;
+      stroke-width: 2.35;
+    }
+
+    .bolsa-grid .card-icon svg {
+      width: 27px;
+      height: 27px;
+    }
+
+    .card-title {
+      min-width: 0;
+      margin: 0;
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: 0;
+      text-align: center;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    .bolsa-grid .card-title {
+      font-size: 15px;
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      min-width: 0;
+      padding-top: 9px;
+    }
+
+    .stat {
+      position: relative;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: center;
+    }
+
+    .stat + .stat::before {
+      position: absolute;
+      top: 8px;
+      bottom: 9px;
+      left: 0;
+      width: 1.5px;
+      content: "";
+      background: var(--line-soft);
+    }
+
+    .stat-label {
+      color: #064bb9;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .bolsa-grid .stat-label {
+      font-size: 10px;
+    }
+
+    .stat-value,
+    .stat-input {
+      margin-top: 13px;
+      color: var(--navy);
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: 0;
+      text-shadow: 0 1px 3px rgba(0, 40, 150, 0.1);
+    }
+
+    .stat-input {
+      width: 82px;
+      height: 43px;
+      padding: 0 4px;
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      text-align: center;
+      appearance: textfield;
+      -moz-appearance: textfield;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .stat-input::-webkit-outer-spin-button,
+    .stat-input::-webkit-inner-spin-button {
+      margin: 0;
+      appearance: none;
+    }
+
+    body.is-current-date .product-card.is-editing .stat-input {
+      border-color: rgba(0, 95, 235, 0.18);
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    body.is-current-date .stat-input:focus {
+      border-color: rgba(0, 95, 235, 0.55);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 0 0 3px rgba(0, 95, 235, 0.09);
+    }
+
+    .stat-input[readonly] {
+      pointer-events: none;
+    }
+
+    .stat-input::placeholder {
+      color: rgba(7, 24, 157, 0.62);
+      opacity: 1;
+    }
+
+    .product-card.is-editing {
+      box-shadow: inset 0 0 0 1px rgba(0, 95, 235, 0.32), 0 8px 24px rgba(0, 95, 235, 0.08);
+    }
+
+    .product-card.is-editing .edit-button {
+      opacity: 1;
+      transform: translateY(0);
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    body.is-no-data .product-card,
+    body.is-no-data .summary-banned {
+      opacity: 0.72;
+    }
+
+    .bolsa-grid .stat-value,
+    .bolsa-grid .stat-input {
+      font-size: 39px;
+    }
+
+    .bolsa-grid .stat-input {
+      width: 66px;
+      height: 40px;
+    }
+
+    .update-badge {
+      position: absolute;
+      right: 3.85%;
+      bottom: 2.15%;
+      width: 252px;
+      height: 75px;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      padding: 9px 17px;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .update-badge:hover {
+      border-color: rgba(0, 95, 235, 0.42);
+      box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+      transform: translateY(-2px);
+    }
+
+    .update-badge svg {
+      width: 42px;
+      height: 42px;
+      color: var(--blue);
+      stroke-width: 2.2;
+    }
+
+    .update-badge span {
+      display: block;
+      color: #1760c3;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .update-badge em {
+      display: block;
+      margin-top: 3px;
+      color: #d71920;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.4px;
+    }
+
+    .update-badge em[hidden] {
+      display: none;
+    }
+
+    .update-badge strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--navy);
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .date-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @media (max-width: 1180px), (max-height: 700px) {
+      .dashboard {
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: 30px 22px;
+        overflow: visible;
+        background-attachment: fixed;
+      }
+
+      .hero-copy,
+      .brand,
+      .dashboard-nav,
+      .summary-total,
+      .summary-banned,
+      .section-title,
+      .product-grid,
+      .update-badge {
+        position: static;
+        width: 100%;
+        height: auto;
+      }
+
+      .hero-copy h1 {
+        font-size: 44px;
+        line-height: 1;
+      }
+
+      .hero-copy p {
+        font-size: 19px;
+      }
+
+      .brand {
+        width: min(390px, 100%);
+      }
+
+      .dashboard-nav {
+        align-self: flex-start;
+      }
+
+      .summary-total {
+        min-height: 145px;
+      }
+
+      .summary-banned {
+        min-height: 140px;
+      }
+
+      .fgts-grid,
+      .bolsa-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .product-card,
+      .bolsa-grid .product-card {
+        min-height: 170px;
+      }
+
+      .update-badge {
+        align-self: flex-end;
+        max-width: 252px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .dashboard {
+        overflow-x: hidden;
+        padding: 24px 16px;
+      }
+
+      .hero-copy {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .hero-copy h1 {
+        max-width: 100%;
+        font-size: 31px;
+        line-height: 1.08;
+        overflow-wrap: break-word;
+      }
+
+      .hero-copy p {
+        width: 100%;
+        max-width: 320px;
+        font-size: 14px;
+        overflow-wrap: break-word;
+      }
+
+      .brand {
+        width: min(320px, 100%);
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .dashboard-nav {
+        width: min(320px, 100%);
+        max-width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 5px;
+        overflow: hidden;
+      }
+
+      .dashboard-nav a {
+        justify-content: center;
+        width: 100%;
+        min-width: 0;
+        padding: 0 6px;
+        font-size: 11px;
+      }
+
+      .dashboard-nav a span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .summary-total {
+        grid-template-columns: 1fr;
+        min-height: 250px;
+      }
+
+      .summary-item + .summary-item::before {
+        top: 0;
+        bottom: auto;
+        left: 12%;
+        width: 76%;
+        height: 1.5px;
+      }
+
+      .summary-number {
+        font-size: 72px;
+      }
+
+      .summary-label {
+        font-size: 18px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .fgts-grid,
+      .bolsa-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-card,
+      .bolsa-grid .product-card {
+        padding: 14px 18px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="icon-users" viewBox="0 0 24 24">
+      <path d="M16 20v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="10" cy="7" r="3" />
+      <path d="M20 20v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 4.13a3 3 0 0 1 0 5.74" />
+    </symbol>
+    <symbol id="icon-megaphone" viewBox="0 0 24 24">
+      <path d="m3 11 18-5v12L3 14v-3Z" />
+      <path d="M11.6 16.3 13 21H9l-2-6" />
+      <path d="M3 11H2a2 2 0 0 0 0 4h1" />
+    </symbol>
+    <symbol id="icon-gear" viewBox="0 0 24 24">
+      <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" />
+      <path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.07.07a2.1 2.1 0 1 1-2.97 2.97l-.07-.07a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.09 1.65V21.4a2.1 2.1 0 1 1-4.2 0v-.1a1.8 1.8 0 0 0-1.1-1.65 1.8 1.8 0 0 0-2 .36l-.07.07a2.1 2.1 0 1 1-2.97-2.97l.07-.07a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.09H2.6a2.1 2.1 0 1 1 0-4.2h.1a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2l-.07-.07A2.1 2.1 0 1 1 6.9 3.6l.07.07a1.8 1.8 0 0 0 2 .36 1.8 1.8 0 0 0 1.09-1.65V2.6a2.1 2.1 0 1 1 4.2 0v.1a1.8 1.8 0 0 0 1.1 1.65 1.8 1.8 0 0 0 2-.36l.07-.07A2.1 2.1 0 1 1 20.4 6.9l-.07.07a1.8 1.8 0 0 0-.36 2 1.8 1.8 0 0 0 1.65 1.09h.18a2.1 2.1 0 1 1 0 4.2h-.1A1.8 1.8 0 0 0 19.4 15Z" />
+    </symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="7.5" r="3.5" />
+      <path d="M5 21v-1.5A6.5 6.5 0 0 1 11.5 13h1A6.5 6.5 0 0 1 19 19.5V21" />
+    </symbol>
+    <symbol id="icon-ban" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="m5.8 5.8 12.4 12.4" />
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3" y="4.5" width="18" height="16.5" rx="2" />
+      <path d="M8 2v5" />
+      <path d="M16 2v5" />
+      <path d="M3 9.5h18" />
+      <path d="M7 13h3" />
+      <path d="M7 17h3" />
+      <path d="M14 13h3" />
+      <circle cx="18" cy="18" r="4" />
+      <path d="M18 16v2.4l1.6 1" />
+    </symbol>
+    <symbol id="icon-pencil" viewBox="0 0 24 24">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </symbol>
+    <symbol id="icon-dashboard" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="7" height="8" rx="1.5" />
+      <rect x="14" y="3" width="7" height="5" rx="1.5" />
+      <rect x="14" y="12" width="7" height="9" rx="1.5" />
+      <rect x="3" y="15" width="7" height="6" rx="1.5" />
+    </symbol>
+    <symbol id="icon-pie" viewBox="0 0 24 24">
+      <path d="M12 2v10h10" />
+      <path d="M20.5 15.5A9 9 0 1 1 8.5 3.5" />
+      <path d="M14 2.2A9 9 0 0 1 21.8 10H14Z" />
+    </symbol>
+  </svg>
+
+  <main class="dashboard" aria-label="Controle de numeros">
+    <header class="hero-copy">
+      <h1>Controle de Números</h1>
+      <p>BMs disponíveis e números disponíveis por produto</p>
+    </header>
+
+    <div class="brand" aria-label="Novo Horizonte Promotora">
+      <img src="img/logo_nhp_transparente.png" alt="Novo Horizonte Promotora" />
+    </div>
+
+    <nav class="dashboard-nav panel" aria-label="Navegação entre dashboards">
+      <a class="active" href="index.html" aria-current="page">
+        <svg aria-hidden="true"><use href="#icon-dashboard"></use></svg>
+        <span>Números</span>
+      </a>
+      <a href="qualidade.html">
+        <svg aria-hidden="true"><use href="#icon-pie"></use></svg>
+        <span>Qualidade</span>
+      </a>
+    </nav>
+
+    <section class="summary-total panel" aria-label="Resumo geral">
+      <div class="summary-item">
+        <span class="summary-number" id="total-bms">78</span>
+        <span class="summary-label">BMs disponíveis</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-number" id="total-numbers">95</span>
+        <span class="summary-label">Números disponíveis</span>
+      </div>
+    </section>
+
+    <aside class="summary-banned panel" aria-label="BMS banidas">
+      <button class="edit-button" type="button" aria-label="Editar BMS banidas">
+        <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+      </button>
+      <div class="banned-heading">
+        <svg aria-hidden="true"><use href="#icon-ban"></use></svg>
+        <span>BMS BANIDAS</span>
+      </div>
+      <input class="banned-number" id="banned-count" type="number" min="0" step="1" inputmode="numeric" aria-label="Quantidade de BMS banidas" value="5" />
+    </aside>
+
+    <div class="section-title fgts-title"><span>FGTS/CLT</span></div>
+    <section class="product-grid fgts-grid" aria-label="FGTS e CLT">
+      <article class="product-card panel" data-product="fgts-total" data-title="BMS/Números - FGTS/CLT">
+        <button class="edit-button" type="button" aria-label="Editar BMS/Números - FGTS/CLT">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-users"></use></svg></span>
+          <h2 class="card-title">BMS/Números</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em BMS/Números - FGTS/CLT" value="45" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em BMS/Números - FGTS/CLT" value="51" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="fgts-partners" data-title="Parceiros - FGTS/CLT">
+        <button class="edit-button" type="button" aria-label="Editar Parceiros - FGTS/CLT">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-users"></use></svg></span>
+          <h2 class="card-title">Parceiros</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Parceiros - FGTS/CLT" value="16" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Parceiros - FGTS/CLT" value="16" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="fgts-broadcast" data-title="Disparo - FGTS/CLT">
+        <button class="edit-button" type="button" aria-label="Editar Disparo - FGTS/CLT">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-megaphone"></use></svg></span>
+          <h2 class="card-title">Disparo</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Disparo - FGTS/CLT" value="26" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Disparo - FGTS/CLT" value="31" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="fgts-internal" data-title="Disparo Interno - FGTS/CLT">
+        <button class="edit-button" type="button" aria-label="Editar Disparo Interno - FGTS/CLT">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-gear"></use></svg></span>
+          <h2 class="card-title">Disparo Interno</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Disparo Interno - FGTS/CLT" value="3" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Disparo Interno - FGTS/CLT" value="4" />
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-title bolsa-title"><span>Bolsa Família</span></div>
+    <section class="product-grid bolsa-grid" aria-label="Bolsa Familia">
+      <article class="product-card panel" data-product="bolsa-total" data-title="BMS/Números - Bolsa Família">
+        <button class="edit-button" type="button" aria-label="Editar BMS/Números - Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-users"></use></svg></span>
+          <h2 class="card-title">BMS/Números</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em BMS/Números - Bolsa Família" value="33" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em BMS/Números - Bolsa Família" value="44" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="bolsa-partners" data-title="Parceiros - Bolsa Família">
+        <button class="edit-button" type="button" aria-label="Editar Parceiros - Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-users"></use></svg></span>
+          <h2 class="card-title">Parceiros</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Parceiros - Bolsa Família" value="12" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Parceiros - Bolsa Família" value="13" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="bolsa-junior" data-title="Junior Arrais - Bolsa Família">
+        <button class="edit-button" type="button" aria-label="Editar Junior Arrais - Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-user"></use></svg></span>
+          <h2 class="card-title">Junior Arrais</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Junior Arrais - Bolsa Família" value="5" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Junior Arrais - Bolsa Família" value="5" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="bolsa-jefinho" data-title="Jefinho - Bolsa Família">
+        <button class="edit-button" type="button" aria-label="Editar Jefinho - Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-user"></use></svg></span>
+          <h2 class="card-title">Jefinho</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Jefinho - Bolsa Família" value="5" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Jefinho - Bolsa Família" value="7" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="bolsa-broadcast" data-title="Disparo - Bolsa Família">
+        <button class="edit-button" type="button" aria-label="Editar Disparo - Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-megaphone"></use></svg></span>
+          <h2 class="card-title">Disparo</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Disparo - Bolsa Família" value="8" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Disparo - Bolsa Família" value="15" />
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card panel" data-product="bolsa-internal" data-title="Disparo Interno - Bolsa Família">
+        <button class="edit-button" type="button" aria-label="Editar Disparo Interno - Bolsa Família">
+          <svg aria-hidden="true"><use href="#icon-pencil"></use></svg>
+        </button>
+        <div class="card-heading">
+          <span class="card-icon"><svg aria-hidden="true"><use href="#icon-gear"></use></svg></span>
+          <h2 class="card-title">Disparo Interno</h2>
+        </div>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-label">BMs disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="bms" aria-label="BMs disponíveis em Disparo Interno - Bolsa Família" value="3" />
+          </div>
+          <div class="stat">
+            <span class="stat-label">Números disponíveis</span>
+            <input class="stat-input" type="number" min="0" step="1" inputmode="numeric" data-field="numbers" aria-label="Números disponíveis em Disparo Interno - Bolsa Família" value="4" />
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="update-badge panel" aria-label="Data de atualizacao">
+      <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
+      <span>Data de atualização:<strong id="display-date">08/05/2026</strong><em id="date-status" hidden>SEM DADOS</em></span>
+      <input class="date-input" id="control-date" type="date" aria-label="Escolher data do controle" />
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    (async () => {
+      const app = window.NHPDashboard;
+      const session = await app.requireAuth();
+
+      if (!session) {
+        return;
+      }
+
+      const DASHBOARD_TYPE = "numeros";
+      const STORAGE_KEY = "controle-bm-historico-v1";
+      const productCards = [...document.querySelectorAll("[data-product]")];
+      const totalBms = document.getElementById("total-bms");
+      const totalNumbers = document.getElementById("total-numbers");
+      const bannedCard = document.querySelector(".summary-banned");
+      const bannedInput = document.getElementById("banned-count");
+      const dateInput = document.getElementById("control-date");
+      const displayDate = document.getElementById("display-date");
+      const dateStatus = document.getElementById("date-status");
+      const updateBadge = document.querySelector(".update-badge");
+
+      const toNumber = (value) => {
+        const number = Number.parseInt(value, 10);
+        return Number.isFinite(number) && number >= 0 ? number : 0;
+      };
+
+      const clone = (value) => JSON.parse(JSON.stringify(value));
+
+      const todayISO = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
+
+      const formatDateBR = (isoDate) => {
+        const [year, month, day] = isoDate.split("-");
+        return `${day}/${month}/${year}`;
+      };
+
+      const readProductsFromDom = () => {
+        const products = {};
+
+        productCards.forEach((card) => {
+          const id = card.dataset.product;
+          products[id] = {};
+
+          card.querySelectorAll(".stat-input").forEach((input) => {
+            products[id][input.dataset.field] = toNumber(input.value);
+          });
+        });
+
+        return products;
+      };
+
+      const defaultState = {
+        summary: {
+          bms: toNumber(totalBms.textContent),
+          numbers: toNumber(totalNumbers.textContent),
+          banned: toNumber(bannedInput.value)
+        },
+        products: readProductsFromDom()
+      };
+
+      const normalizeState = (state) => {
+        const normalized = {
+          summary: {
+            bms: toNumber(state?.summary?.bms ?? defaultState.summary.bms),
+            numbers: toNumber(state?.summary?.numbers ?? defaultState.summary.numbers),
+            banned: toNumber(state?.summary?.banned ?? defaultState.summary.banned)
+          },
+          products: clone(defaultState.products)
+        };
+
+        Object.keys(normalized.products).forEach((productId) => {
+          normalized.products[productId].bms = toNumber(state?.products?.[productId]?.bms ?? normalized.products[productId].bms);
+          normalized.products[productId].numbers = toNumber(state?.products?.[productId]?.numbers ?? normalized.products[productId].numbers);
+        });
+
+        return normalized;
+      };
+
+      let syncWarning = "";
+
+      const setSyncWarning = (message) => {
+        syncWarning = message;
+
+        if (message) {
+          dateStatus.textContent = message;
+          dateStatus.hidden = false;
+          return;
+        }
+
+        dateStatus.textContent = "SEM DADOS";
+      };
+
+      const loadLocalHistory = () => app.readLocalHistory(STORAGE_KEY);
+
+      const cacheHistory = () => {
+        app.writeLocalHistory(STORAGE_KEY, history);
+      };
+
+      const loadHistory = async () => {
+        try {
+          return await app.loadDashboardHistory(DASHBOARD_TYPE, STORAGE_KEY, normalizeState);
+        } catch (error) {
+          console.error(error);
+          setSyncWarning("MODO LOCAL");
+          return loadLocalHistory();
+        }
+      };
+
+      const saveRecord = async (isoDate, state) => {
+        history[isoDate] = normalizeState(state);
+        cacheHistory();
+
+        try {
+          await app.saveDashboardRecord(DASHBOARD_TYPE, isoDate, history[isoDate]);
+          setSyncWarning("");
+        } catch (error) {
+          console.error(error);
+          setSyncWarning("SALVO LOCAL");
+        }
+      };
+
+      const findExactStateForDate = (isoDate) => {
+        return history[isoDate] ? normalizeState(history[isoDate]) : null;
+      };
+
+      const buildTodayState = () => {
+        const previousDates = Object.keys(history)
+          .filter((date) => date < today)
+          .sort();
+
+        if (previousDates.length) {
+          return normalizeState(history[previousDates[previousDates.length - 1]]);
+        }
+
+        return normalizeState(defaultState);
+      };
+
+      const lockAllCards = () => {
+        editingCard = null;
+        editingBanned = false;
+        bannedCard.classList.remove("is-editing");
+        bannedInput.readOnly = true;
+        bannedInput.tabIndex = -1;
+
+        productCards.forEach((card) => {
+          card.classList.remove("is-editing");
+
+          card.querySelectorAll(".stat-input").forEach((input) => {
+            input.readOnly = true;
+            input.tabIndex = -1;
+          });
+        });
+      };
+
+      const setViewMode = ({ canEdit, hasData }) => {
+        document.body.classList.toggle("is-current-date", canEdit);
+        document.body.classList.toggle("is-readonly-date", !canEdit);
+        document.body.classList.toggle("is-no-data", !hasData);
+        lockAllCards();
+      };
+
+      const renderState = (state, isoDate) => {
+        totalBms.textContent = state.summary.bms;
+        totalNumbers.textContent = state.summary.numbers;
+        bannedInput.placeholder = "";
+        bannedInput.value = state.summary.banned;
+        displayDate.textContent = formatDateBR(isoDate);
+        dateStatus.textContent = syncWarning || "SEM DADOS";
+        dateStatus.hidden = !syncWarning;
+
+        productCards.forEach((card) => {
+          const product = state.products[card.dataset.product];
+
+          card.querySelectorAll(".stat-input").forEach((input) => {
+            input.placeholder = "";
+            input.value = product[input.dataset.field];
+          });
+        });
+      };
+
+      const renderNoData = (isoDate) => {
+        totalBms.textContent = "--";
+        totalNumbers.textContent = "--";
+        bannedInput.placeholder = "--";
+        bannedInput.value = "";
+        displayDate.textContent = formatDateBR(isoDate);
+        dateStatus.textContent = "SEM DADOS";
+        dateStatus.hidden = false;
+
+        productCards.forEach((card) => {
+          card.querySelectorAll(".stat-input").forEach((input) => {
+            input.placeholder = "--";
+            input.value = "";
+          });
+        });
+      };
+
+      const ensureTodayExists = async () => {
+        if (!history[today]) {
+          history[today] = buildTodayState();
+          await saveRecord(today, history[today]);
+        }
+      };
+
+      const selectDate = (isoDate) => {
+        selectedDate = isoDate > today ? today : isoDate;
+        const state = findExactStateForDate(selectedDate);
+        const isCurrentDate = selectedDate === today;
+
+        dateInput.value = selectedDate;
+
+        if (state) {
+          renderState(state, selectedDate);
+          setViewMode({ canEdit: isCurrentDate, hasData: true });
+          return;
+        }
+
+        renderNoData(selectedDate);
+        setViewMode({ canEdit: false, hasData: false });
+      };
+
+      const saveCurrentEdit = async (input) => {
+        if (input.value === "") {
+          return;
+        }
+
+        if (selectedDate !== today) {
+          const state = findExactStateForDate(selectedDate);
+          if (state) {
+            renderState(state, selectedDate);
+          } else {
+            renderNoData(selectedDate);
+          }
+          return;
+        }
+
+        const card = input.closest("[data-product]");
+        const productId = card.dataset.product;
+        const field = input.dataset.field;
+        const nextValue = toNumber(input.value);
+        const state = normalizeState(history[today]);
+        const previousValue = toNumber(state.products[productId][field]);
+        const delta = nextValue - previousValue;
+
+        state.products[productId][field] = nextValue;
+        state.summary[field] = Math.max(0, toNumber(state.summary[field]) + delta);
+        history[today] = state;
+        totalBms.textContent = state.summary.bms;
+        totalNumbers.textContent = state.summary.numbers;
+        await saveRecord(today, state);
+      };
+
+      const saveBannedEdit = async () => {
+        if (bannedInput.value === "" || selectedDate !== today) {
+          return;
+        }
+
+        const state = normalizeState(history[today]);
+        state.summary.banned = toNumber(bannedInput.value);
+        await saveRecord(today, state);
+      };
+
+      const openCardEditor = (card) => {
+        if (selectedDate !== today || !history[today]) {
+          return;
+        }
+
+        lockAllCards();
+        editingCard = card;
+        card.classList.add("is-editing");
+
+        const inputs = [...card.querySelectorAll(".stat-input")];
+        inputs.forEach((input) => {
+          input.readOnly = false;
+          input.tabIndex = 0;
+        });
+
+        inputs[0]?.focus();
+        inputs[0]?.select();
+      };
+
+      const openBannedEditor = () => {
+        if (selectedDate !== today || !history[today]) {
+          return;
+        }
+
+        lockAllCards();
+        editingBanned = true;
+        bannedCard.classList.add("is-editing");
+        bannedInput.readOnly = false;
+        bannedInput.tabIndex = 0;
+        bannedInput.focus();
+        bannedInput.select();
+      };
+
+      let history = await loadHistory();
+      const today = todayISO();
+      let selectedDate = today;
+      let editingCard = null;
+      let editingBanned = false;
+
+      dateInput.max = today;
+      cacheHistory();
+      await ensureTodayExists();
+      selectDate(today);
+
+      dateInput.addEventListener("change", () => {
+        if (dateInput.value) {
+          selectDate(dateInput.value);
+        }
+      });
+
+      updateBadge.addEventListener("click", () => {
+        if (typeof dateInput.showPicker === "function") {
+          try {
+            dateInput.showPicker();
+            return;
+          } catch {
+            dateInput.focus();
+          }
+        }
+
+        dateInput.focus();
+      });
+
+      bannedCard.querySelector(".edit-button").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openBannedEditor();
+      });
+
+      bannedInput.addEventListener("keydown", (event) => {
+        if (["e", "E", "+", "-", ","].includes(event.key)) {
+          event.preventDefault();
+        }
+      });
+
+      bannedInput.addEventListener("focus", () => bannedInput.select());
+      bannedInput.addEventListener("input", saveBannedEdit);
+      bannedInput.addEventListener("blur", () => {
+        if (bannedInput.value === "") {
+          bannedInput.value = "0";
+          saveBannedEdit();
+        }
+      });
+
+      productCards.forEach((card) => {
+        card.querySelector(".edit-button").addEventListener("click", (event) => {
+          event.stopPropagation();
+          openCardEditor(card);
+        });
+
+        card.querySelectorAll(".stat-input").forEach((input) => {
+          input.addEventListener("keydown", (event) => {
+            if (["e", "E", "+", "-", ","].includes(event.key)) {
+              event.preventDefault();
+            }
+          });
+
+          input.addEventListener("focus", () => input.select());
+          input.addEventListener("input", () => saveCurrentEdit(input));
+          input.addEventListener("blur", () => {
+            if (input.value === "") {
+              input.value = "0";
+              saveCurrentEdit(input);
+            }
+          });
+        });
+      });
+
+      document.addEventListener("click", (event) => {
+        if ((editingCard && !editingCard.contains(event.target)) || (editingBanned && !bannedCard.contains(event.target))) {
+          lockAllCards();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && (editingCard || editingBanned)) {
+          lockAllCards();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
