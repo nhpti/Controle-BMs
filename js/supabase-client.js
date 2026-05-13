@@ -156,6 +156,21 @@
     }, {});
   };
 
+  const loadDashboardRecord = async (dashboard, recordDate) => {
+    const { data, error } = await client
+      .from(TABLE_NAME)
+      .select("data")
+      .eq("dashboard", dashboard)
+      .eq("record_date", recordDate)
+      .limit(1);
+
+    if (error) {
+      throw error;
+    }
+
+    return data?.[0]?.data || null;
+  };
+
   const currentUserId = async () => {
     const { data, error } = await client.auth.getUser();
 
@@ -188,21 +203,7 @@
 
   const loadDashboardHistory = async (dashboard, storageKey, normalizeState) => {
     const remoteHistory = await loadRemoteHistory(dashboard);
-    const localHistory = readLocalHistory(storageKey);
-    const missingLocalDates = Object.keys(localHistory)
-      .filter((date) => !remoteHistory[date])
-      .sort();
-
-    for (const date of missingLocalDates) {
-      const state = normalizeState(localHistory[date]);
-      await saveDashboardRecord(dashboard, date, state);
-      remoteHistory[date] = state;
-    }
-
-    if (missingLocalDates.length) {
-      writeLocalHistory(storageKey, remoteHistory);
-    }
-
+    writeLocalHistory(storageKey, remoteHistory);
     return remoteHistory;
   };
 
@@ -213,6 +214,7 @@
     requireAuth,
     readLocalHistory,
     writeLocalHistory,
+    loadDashboardRecord,
     loadDashboardHistory,
     saveDashboardRecord
   };

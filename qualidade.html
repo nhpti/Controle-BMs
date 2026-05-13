@@ -1160,6 +1160,30 @@
         return history[isoDate] ? normalizeState(history[isoDate]) : null;
       };
 
+      const loadExactStateForDate = async (isoDate) => {
+        if (isoDate === today) {
+          return findExactStateForDate(isoDate);
+        }
+
+        try {
+          const remoteState = await app.loadDashboardRecord(DASHBOARD_TYPE, isoDate);
+
+          if (!remoteState) {
+            delete history[isoDate];
+            cacheHistory();
+            return null;
+          }
+
+          history[isoDate] = normalizeState(remoteState);
+          cacheHistory();
+          return history[isoDate];
+        } catch (error) {
+          console.error(error);
+          setSyncWarning("MODO LOCAL");
+          return findExactStateForDate(isoDate);
+        }
+      };
+
       const buildTodayState = () => {
         const previousDates = Object.keys(history)
           .filter((date) => date < today)
@@ -1256,9 +1280,9 @@
         }
       };
 
-      const selectDate = (isoDate) => {
+      const selectDate = async (isoDate) => {
         selectedDate = isoDate > today ? today : isoDate;
-        const state = findExactStateForDate(selectedDate);
+        const state = await loadExactStateForDate(selectedDate);
         const isCurrentDate = selectedDate === today;
 
         dateInput.value = selectedDate;
@@ -1315,12 +1339,12 @@
       dateInput.max = today;
       cacheHistory();
       await ensureTodayExists();
-      selectDate(today);
+      await selectDate(today);
       document.body.classList.remove("auth-pending");
 
       dateInput.addEventListener("change", () => {
         if (dateInput.value) {
-          selectDate(dateInput.value);
+          void selectDate(dateInput.value);
         }
       });
 
