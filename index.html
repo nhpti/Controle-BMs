@@ -39,6 +39,10 @@
       overflow: auto;
     }
 
+    body.auth-pending .dashboard {
+      visibility: hidden;
+    }
+
     .sprite {
       display: none;
     }
@@ -904,7 +908,7 @@
     }
   </style>
 </head>
-<body>
+<body class="auth-pending">
   <svg class="sprite" aria-hidden="true">
     <symbol id="icon-users" viewBox="0 0 24 24">
       <path d="M16 20v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -1339,17 +1343,59 @@
         }
       };
 
+      const remoteSaveQueue = new Map();
+      let isSavingRemote = false;
+      let remoteRetryTimer = 0;
+
+      const scheduleRemoteRetry = () => {
+        if (remoteRetryTimer) {
+          return;
+        }
+
+        remoteRetryTimer = window.setTimeout(() => {
+          remoteRetryTimer = 0;
+          void flushRemoteSaveQueue();
+        }, 3000);
+      };
+
+      const flushRemoteSaveQueue = async () => {
+        if (isSavingRemote) {
+          return;
+        }
+
+        isSavingRemote = true;
+
+        while (remoteSaveQueue.size) {
+          const [isoDate, state] = remoteSaveQueue.entries().next().value;
+          remoteSaveQueue.delete(isoDate);
+
+          try {
+            await app.saveDashboardRecord(DASHBOARD_TYPE, isoDate, state);
+
+            if (!remoteSaveQueue.size) {
+              setSyncWarning("");
+            }
+          } catch (error) {
+            console.error(error);
+
+            if (!remoteSaveQueue.has(isoDate)) {
+              remoteSaveQueue.set(isoDate, state);
+            }
+
+            setSyncWarning("SALVO LOCAL");
+            scheduleRemoteRetry();
+            break;
+          }
+        }
+
+        isSavingRemote = false;
+      };
+
       const saveRecord = async (isoDate, state) => {
         history[isoDate] = normalizeState(state);
         cacheHistory();
-
-        try {
-          await app.saveDashboardRecord(DASHBOARD_TYPE, isoDate, history[isoDate]);
-          setSyncWarning("");
-        } catch (error) {
-          console.error(error);
-          setSyncWarning("SALVO LOCAL");
-        }
+        remoteSaveQueue.set(isoDate, history[isoDate]);
+        await flushRemoteSaveQueue();
       };
 
       const findExactStateForDate = (isoDate) => {
@@ -1534,6 +1580,7 @@
       cacheHistory();
       await ensureTodayExists();
       selectDate(today);
+      document.body.classList.remove("auth-pending");
 
       dateInput.addEventListener("change", () => {
         if (dateInput.value) {
