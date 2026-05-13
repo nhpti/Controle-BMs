@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Controle de Numeros - Novo Horizonte Promotora</title>
+  <link rel="icon" type="image/png" href="img/logo_nhp_ti2.png" />
+  <link rel="apple-touch-icon" href="img/logo_nhp_ti2.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -1224,6 +1226,7 @@
 
       const DASHBOARD_TYPE = "numeros";
       const STORAGE_KEY = "controle-bm-historico-v1";
+      const SUMMARY_PRODUCT_IDS = ["fgts-total", "bolsa-total"];
       const productCards = [...document.querySelectorAll("[data-product]")];
       const totalBms = document.getElementById("total-bms");
       const totalNumbers = document.getElementById("total-numbers");
@@ -1269,22 +1272,27 @@
         return products;
       };
 
+      const calculateSummaryField = (products, field) => {
+        return SUMMARY_PRODUCT_IDS.reduce((total, productId) => {
+          return total + toNumber(products?.[productId]?.[field]);
+        }, 0);
+      };
+
+      const calculateSummary = (products, banned) => ({
+        bms: calculateSummaryField(products, "bms"),
+        numbers: calculateSummaryField(products, "numbers"),
+        banned: toNumber(banned)
+      });
+
       const defaultState = {
-        summary: {
-          bms: toNumber(totalBms.textContent),
-          numbers: toNumber(totalNumbers.textContent),
-          banned: toNumber(bannedInput.value)
-        },
         products: readProductsFromDom()
       };
 
+      defaultState.summary = calculateSummary(defaultState.products, bannedInput.value);
+
       const normalizeState = (state) => {
         const normalized = {
-          summary: {
-            bms: toNumber(state?.summary?.bms ?? defaultState.summary.bms),
-            numbers: toNumber(state?.summary?.numbers ?? defaultState.summary.numbers),
-            banned: toNumber(state?.summary?.banned ?? defaultState.summary.banned)
-          },
+          summary: { ...defaultState.summary },
           products: clone(defaultState.products)
         };
 
@@ -1292,6 +1300,11 @@
           normalized.products[productId].bms = toNumber(state?.products?.[productId]?.bms ?? normalized.products[productId].bms);
           normalized.products[productId].numbers = toNumber(state?.products?.[productId]?.numbers ?? normalized.products[productId].numbers);
         });
+
+        normalized.summary = calculateSummary(
+          normalized.products,
+          state?.summary?.banned ?? defaultState.summary.banned
+        );
 
         return normalized;
       };
@@ -1459,11 +1472,9 @@
         const field = input.dataset.field;
         const nextValue = toNumber(input.value);
         const state = normalizeState(history[today]);
-        const previousValue = toNumber(state.products[productId][field]);
-        const delta = nextValue - previousValue;
 
         state.products[productId][field] = nextValue;
-        state.summary[field] = Math.max(0, toNumber(state.summary[field]) + delta);
+        state.summary = calculateSummary(state.products, state.summary.banned);
         history[today] = state;
         totalBms.textContent = state.summary.bms;
         totalNumbers.textContent = state.summary.numbers;
